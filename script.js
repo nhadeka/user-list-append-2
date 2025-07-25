@@ -16,6 +16,7 @@
         row: 'row',
         cell: 'cell',
         deleteButton: 'delete-button',
+        buttonWrapper: 'button-wrapper',
     };
 
     const selectors = Object.entries(classes).reduce((obj, [key, value]) => {
@@ -53,7 +54,7 @@
 
     const createCustomStyle = () => {
         const { userListContainer, error, headerRow, userRow, headerCell, cell, deleteButton, apiButton,
-            insApiUsers } = selectors;
+            insApiUsers, buttonWrapper } = selectors;
 
         const customCss =
             `body {
@@ -110,6 +111,11 @@
                 color: white;
                 padding: 5px;
                 border-radius: 5px;
+            }
+            ${buttonWrapper}{
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
             @media (max-width: 700px) {
                 ${insApiUsers} {
@@ -271,13 +277,16 @@
         const observer = new MutationObserver(() => {
             const hasUsers = userListContainer.querySelectorAll(selectors.userRow).length > 0;
             const apiButton = appendLocationDiv.querySelector(selectors.apiButton);
+            
 
             if (!hasUsers) {
                 if (!apiButton) {
                     const apiButton = document.createElement('button');
-
+                    const apiButtonWrapper = document.createElement('div');
+                    apiButtonWrapper.classList.add(classes.buttonWrapper);
                     apiButton.classList.add(classes.apiButton);
-                    apiButton.textContent = 'Api Button';
+                    apiButton.textContent = 'Get All Users';
+                    apiButtonWrapper.appendChild(apiButton);
 
                     apiButton.addEventListener('click', () => {
                         const data = sessionStorage.getItem('isClicked');
@@ -296,7 +305,7 @@
                         sessionStorage.setItem('isClicked', 'true'); 
                     });
 
-                    appendLocationDiv.appendChild(apiButton);
+                    appendLocationDiv.appendChild(apiButtonWrapper);
 
                     observer.disconnect();
 
